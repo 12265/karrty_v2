@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:karttyas/karrty_provider.dart';
 import 'package:provider/provider.dart';
@@ -13,7 +14,7 @@ class MenuPage extends StatelessWidget {
   }
 
   Widget build(BuildContext context) {
-    final mediaQeruy = MediaQuery.of(context);
+    bool isLandScape = MediaQuery.of(context).orientation == Orientation.landscape;
     final theme = Theme.of(context);
     return SafeArea(
       child: Drawer(
@@ -27,21 +28,21 @@ class MenuPage extends StatelessWidget {
                   width: double.infinity,
                   child: Column(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                  SizedBox(height: mediaQeruy.size.height * 0.04),
+                  SizedBox(height: 70.h),
                   Container(
                     decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                         image: DecorationImage(
                             image: AssetImage("Images/images.jpg"),
-                            fit: BoxFit.cover)),
-                    width: mediaQeruy.size.width * 0.2,
-                    height: mediaQeruy.size.height * 0.08,
+                            fit: BoxFit.fitHeight)),
+                    width: 200.w,
+                    height: isLandScape == false ? 150.h:200.h,
                   ), Padding(
                   padding: EdgeInsets.symmetric(
-                      vertical: mediaQeruy.size.height * 0.04),
+                      vertical: 40.h),
                   child: FittedBox(
-                      child: Text(snapshot.data.toString(),style: TextStyle(color: Colors.white)),
-                  fit: BoxFit.cover,),
+                      fit: BoxFit.cover,
+                      child: Text(snapshot.data.toString(),style: const TextStyle(color: Colors.white)),),
                 )],
               )
               );
@@ -50,7 +51,7 @@ class MenuPage extends StatelessWidget {
                 return Center(child: CircularProgressIndicator());
               }
             }
-            ),Spacer(),TextButton(onPressed: ()=> context.read<KarrtyProvider>().disconnect(), child: Row(children: [Icon(Icons.arrow_circle_left_outlined,color: theme.accentColor,),Text("Déconnecter",style: TextStyle(color: Colors.red,fontSize: mediaQeruy.size.width * 0.04),)],))
+            ),Spacer(),TextButton(onPressed: ()=> context.read<KarrtyProvider>().disconnect(), child: Row(children: [Icon(Icons.arrow_circle_left_outlined,color: theme.accentColor,),Text("Déconnecter",style: TextStyle(color: Colors.red,fontSize: isLandScape == false ? 29.sp : 14.sp),)],))
           ],
         ),
       ),

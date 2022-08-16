@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:karttyas/http_files/http_client.dart';
 import 'package:karttyas/http_files/karrty_url.dart';
 import 'package:karttyas/karrty_provider.dart';
@@ -13,17 +14,15 @@ import '../login_page/text_input.dart';
 class MarcheInformation extends StatelessWidget {
   int index;
   TextEditingController textInput = TextEditingController();
-  bool firstrebuild = true;
   int numberOfMarches = 0;
 
   MarcheInformation(this.index);
 
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final mediaQuery = MediaQuery.of(context);
     return Scaffold(
       appBar: getAppBar(theme),
-      body: getBody(mediaQuery, context, theme),
+      body: getBody(context),
       backgroundColor: theme.backgroundColor,
     );
   }
@@ -60,34 +59,23 @@ class MarcheInformation extends StatelessWidget {
     return contractModdle;
   }
 
-  Widget getBody(
-      MediaQueryData mediaQuery, BuildContext context, ThemeData theme) {
+  Widget getBody(BuildContext context) {
     getData(context);
-    if (firstrebuild == true) {
-      textInput.text = context
-          .watch<KarrtyProvider>()
-          .textInputSaveValues["sous-traitant"]
-          .toString();
-      textInput.selection = TextSelection.fromPosition(
-          TextPosition(offset: textInput.text.length));
-      firstrebuild = false;
-    }
+      textInput.text = Provider.of<KarrtyProvider>(context,listen: false).textInputSaveValues["sous-traitant"].toString();
+      textInput.selection = TextSelection.fromPosition(TextPosition(offset: int.parse(Provider.of<KarrtyProvider>(context,listen: false).textInputSaveValues["traitantCursorPos"]!)));
     return ListView(
       children: [
         Padding(
-          padding:
-              EdgeInsets.symmetric(vertical: mediaQuery.size.height * 0.05),
+          padding: EdgeInsets.symmetric(vertical: 85.h),
           child: Center(
               child: Container(
             width: double.infinity,
-            height: mediaQuery.size.height * 0.105,
-            margin:
-                EdgeInsets.symmetric(horizontal: mediaQuery.size.width * 0.12),
+            height: 170.h,
+            margin: EdgeInsets.symmetric(horizontal: 120.w),
             child: FittedBox(
               child: Text(
                 "MARCHÉ:\n${context.watch<KarrtyProvider>().marcheModdle[index].name.toString()}",
-                style: TextStyle(
-                  fontSize: mediaQuery.size.width * 0.1,
+                style: const TextStyle(
                   color: Colors.white,
                 ),
                 textAlign: TextAlign.center,
@@ -96,85 +84,85 @@ class MarcheInformation extends StatelessWidget {
           )),
         ),
         Container(
-          margin: EdgeInsets.all(mediaQuery.size.width * 0.01),
+          margin: EdgeInsets.symmetric(horizontal: 10.w),
           width: double.infinity,
-          height: mediaQuery.size.height * 0.68,
-          decoration: BoxDecoration(
+          height: 1095.h,
+          decoration: const BoxDecoration(
               borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(mediaQuery.size.width * 0.1)),
+                  top: Radius.circular(25)),
               color: Colors.white),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: mediaQuery.size.height * 0.03,
-              ),
-              Padding(
-                padding: EdgeInsets.all(mediaQuery.size.width * 0.02),
-                child: TextInput("Chercher un sous-traitant", textInput,
-                    context, mediaQuery, Icon(Icons.search), false, theme, 1),
-              ),
-              FutureBuilder(
-                  future: getData(context),
-                  builder: (context,
-                      AsyncSnapshot<List<ContractsModdle>?> snapshot) {
-                    if (snapshot.hasData) {
-                      counting(snapshot.data, context);
-                      return Text(
-                        "    ${numberOfMarches} sous-traitants",
-                        style: TextStyle(
-                            fontSize: mediaQuery.size.width * 0.05,
-                            fontWeight: FontWeight.bold),
-                      );
-                    } else {
-                      return Text(
-                        "    0 sous-traitants",
-                        style: TextStyle(
-                            fontSize: mediaQuery.size.width * 0.05,
-                            fontWeight: FontWeight.bold),
-                      );
-                    }
-                  }),
-              Container(
-                  width: double.infinity,
-                  height: mediaQuery.size.height * 0.53,
-                  child: FutureBuilder(
-                      future: getData(context),
-                      builder: (context,
-                          AsyncSnapshot<List<ContractsModdle>?> snapshot) {
-                        if (snapshot.hasData) {
-                          context
-                              .read<KarrtyProvider>()
-                              .hasValue("ContractsModdle", snapshot.data);
-                          return ListView.builder(
-                              itemBuilder: (context, index) {
-                                return Column(
-                                  children: [
-                                    if (snapshot.data![index].market!
-                                        .toLowerCase()
-                                        .contains(context
-                                            .watch<KarrtyProvider>()
-                                            .textInputSaveValues[
-                                                "sous-traitant"]
-                                            .toString()
-                                            .toLowerCase()))
-                                      MarcheComponents(
-                                          snapshot.data![index].market
-                                              .toString(),
-                                          AssetImage("Images/images.jpg"),
-                                          snapshot.data![index].field
-                                              .toString(),
-                                          index),
-                                  ],
-                                );
-                              },
-                              itemCount: snapshot.data!.length);
-                        } else {
-                          return Center(child: CircularProgressIndicator());
-                        }
-                      }))
-            ],
-          ),
+          child: LayoutBuilder(builder: (context, contrains) {
+            return ListView(
+              children: [
+                SizedBox(
+                  height: 50.h,
+                ),
+                Padding(
+                  padding:
+                      EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
+                  child: TextInput("Chercher un sous-traitant", textInput,
+                      context, Icon(Icons.search), false, Theme.of(context), 1),
+                ),
+                FutureBuilder(
+                    future: getData(context),
+                    builder: (context,
+                        AsyncSnapshot<List<ContractsModdle>?> snapshot) {
+                      if (snapshot.hasData) {
+                        counting(snapshot.data, context);
+                        return Text(
+                          "    ${numberOfMarches} sous-traitants",
+                          style: TextStyle(
+                              fontSize: 34.sp, fontWeight: FontWeight.bold),
+                        );
+                      } else {
+                        return Text(
+                          "    0 sous-traitants",
+                          style: TextStyle(
+                              fontSize: 34.sp, fontWeight: FontWeight.bold),
+                        );
+                      }
+                    }),
+                Container(
+                    width: double.infinity,
+                    height: contrains.maxHeight - (216.h),
+                    child: FutureBuilder(
+                        future: getData(context),
+                        builder: (context,
+                            AsyncSnapshot<List<ContractsModdle>?> snapshot) {
+                          if (snapshot.hasData) {
+                            context
+                                .read<KarrtyProvider>()
+                                .hasValue("ContractsModdle", snapshot.data);
+                            return ListView.builder(
+                                itemBuilder: (context, index) {
+                                  return Column(
+                                    children: [
+                                      if (snapshot.data![index].market!
+                                          .toLowerCase()
+                                          .contains(context
+                                              .watch<KarrtyProvider>()
+                                              .textInputSaveValues[
+                                                  "sous-traitant"]
+                                              .toString()
+                                              .toLowerCase()))
+                                        MarcheComponents(
+                                            snapshot.data![index].market
+                                                .toString(),
+                                            AssetImage("Images/images.jpg"),
+                                            snapshot.data![index].field
+                                                .toString(),
+                                            index),
+                                    ],
+                                  );
+                                },
+                                itemCount: snapshot.data!.length);
+                          } else {
+                            return Center(child: CircularProgressIndicator());
+                          }
+                        }))
+              ],
+            );
+          }),
         )
       ],
     );

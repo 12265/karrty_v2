@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:karttyas/karrty_provider.dart';
 import 'package:karttyas/march%C3%A9_informations_page/march%C3%A9_informations.dart';
 import 'package:karttyas/personal_informations/personal_informations.dart';
@@ -13,21 +14,21 @@ class MarcheComponents extends StatelessWidget {
   MarcheComponents(this.tittle, this.id, this.owner, this.index);
 
   Widget build(BuildContext context) {
-    MediaQueryData mediaQuery = MediaQuery.of(context);
+    bool isLandScape = MediaQuery.of(context).orientation == Orientation.landscape;
     final theme = Theme.of(context);
     return Column(
       children: [
         Divider(color: Colors.grey),
         Padding(
           padding:
-              EdgeInsets.symmetric(horizontal: mediaQuery.size.width * 0.02),
+              EdgeInsets.symmetric(horizontal: 4.w),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Container(
                   height:
-                      id is AssetImage ? mediaQuery.size.width * 0.15 : null,
-                  width: id is AssetImage ? mediaQuery.size.width * 0.15 : null,
+                      id is AssetImage ? 120.h : null,
+                  width: id is AssetImage ? 120.w : null,
                   alignment: AlignmentDirectional.center,
                   decoration: BoxDecoration(
                       shape: BoxShape.circle,
@@ -39,28 +40,28 @@ class MarcheComponents extends StatelessWidget {
                           : null),
                   child: id is String
                       ? Container(
-                          width: mediaQuery.size.width * 0.15,
-                          height: mediaQuery.size.height * 0.07,
+                          width: isLandScape == false ? 120.w:80.w,
+                          height: isLandScape == false ? 120.h: 250.h,
                           child: FittedBox(
                               child: Padding(
-                                padding: EdgeInsets.all(mediaQuery.size.width * 0.04),
+                                padding: EdgeInsets.all(20.w),
                                 child: Text(id,
                                     style: TextStyle(
-                                        fontSize: mediaQuery.size.width * 0.1,
+                                        fontSize: isLandScape == false ? 30.sp :12.sp,
                                         color: Colors.white)),
                               )))
                       : null),
-              SizedBox(width: mediaQuery.size.width * 0.05),
+              SizedBox(width: 20.w),
               Column(crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(width: mediaQuery.size.width * 0.6,alignment: Alignment.topLeft,
+                  Container(width: 450.w,alignment: Alignment.topLeft,
                     child: Text(overflow: TextOverflow.fade,
                       tittle,maxLines: 1,
-                      style: TextStyle(fontSize: mediaQuery.size.width * 0.05),
+                      style: TextStyle(fontSize: isLandScape == false ? 32.sp:21.sp),
                     ),
                   ),
-                  SizedBox(height: mediaQuery.size.height * 0.01),
-                  Container(width: mediaQuery.size.width * 0.6,child: Text(owner,maxLines: 1, style: TextStyle(color: Colors.black38)))
+                  SizedBox(height: 10.h),
+                  Container(width: 450.w,child: Text(owner,maxLines: 1, style: TextStyle(color: Colors.black38)))
                 ],
               ),
               Spacer(),

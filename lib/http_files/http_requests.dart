@@ -24,6 +24,7 @@ class AuthorizationInterceptor implements InterceptorContract {
   // Currently we do not have any need to intercept response
   @override
   Future<ResponseData> interceptResponse({required ResponseData data}) async {
+    data.headers!['content-type'] = 'application/json; charset=utf-8';
     return data;
   }
 }

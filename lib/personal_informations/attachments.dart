@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:karttyas/http_files/http_client.dart';
 import 'package:karttyas/http_files/karrty_url.dart';
 import 'package:karttyas/moddles/work_trackers_moddle.dart';
@@ -24,28 +25,26 @@ class Attachments extends StatelessWidget {
 
   Widget build(BuildContext context) {
     getData(context);
-    final mediaQuery = MediaQuery.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return ListView(
       children: [
         SizedBox(
-          height: mediaQuery.size.height * 0.03,
+          height: 20.h,
         ),
         FutureBuilder(future: getData(context),builder: (context, AsyncSnapshot<List<WorkTrackerModdle>> snapshot) {
           if (snapshot.hasData) {
             return Text(
-              "    ${snapshot.data!.length} Actif marchés",
+              "    ${snapshot.data!.length} Attachements",
               style: TextStyle(
-                  fontSize: mediaQuery.size.width * 0.05,
+                  fontSize: 32.sp,
                   fontWeight: FontWeight.bold),
             );
           }
           else
             {
              return Text(
-                "    0 Actif marchés",
+                "    0 Attachements",
                 style: TextStyle(
-                    fontSize: mediaQuery.size.width * 0.05,
+                    fontSize: 32.sp,
                     fontWeight: FontWeight.bold),
               );
             }
@@ -53,7 +52,7 @@ class Attachments extends StatelessWidget {
         ),
         Container(
             width: double.infinity,
-            height: mediaQuery.size.height * 0.53,
+            height: 880.h,
             child: FutureBuilder(future: getData(context),builder: (context, AsyncSnapshot<List<WorkTrackerModdle>> snapshot) {
               if(snapshot.hasData) {
                 return AttachmentComponents(snapshot.data!);

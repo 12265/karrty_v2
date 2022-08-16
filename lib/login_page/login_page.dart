@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:karttyas/karrty_provider.dart';
 import 'package:karttyas/login_page/text_above_text_input.dart';
 import 'package:karttyas/login_page/text_input.dart';
@@ -16,8 +17,7 @@ class LoginPage extends StatelessWidget {
         body: getBody(context));
   }
   Widget getBody(BuildContext context) {
-    print("rebuilded");
-    MediaQueryData mediaQuery = MediaQuery.of(context);
+    bool isLandScape = MediaQuery.of(context).orientation == Orientation.landscape;
     ThemeData theme = Theme.of(context);
     if(firstrebuild == true) {
       username.text = context.watch<KarrtyProvider>().textInputSaveValues["username"].toString();
@@ -30,12 +30,12 @@ class LoginPage extends StatelessWidget {
     }
     return ListView(
       children: [
-        Container(height: mediaQuery.size.height * 0.365,decoration: BoxDecoration(image: DecorationImage(image: AssetImage("Images/Capture.PNG"))),),
+        Container(height: 580.h,decoration: BoxDecoration(image: DecorationImage(image: AssetImage("Images/Capture.PNG"))),),
         Card(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(mediaQuery.size.width * 0.1))),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(80.h))),
             elevation: 10,
             child: Padding(
-              padding: EdgeInsets.all(mediaQuery.size.height * 0.04),
+              padding: EdgeInsets.symmetric(horizontal: 80.w,vertical: 70.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
@@ -43,29 +43,27 @@ class LoginPage extends StatelessWidget {
                   Center(
                       child: Text("Bienvenu(e)",
                           style: TextStyle(
-                              fontSize: mediaQuery.size.width * 0.1))),
+                              fontSize: 65.sp))),
                   Center(
                       child: Text(
                     "à votre assitant de l'attachement",
-                    style: TextStyle(fontSize: mediaQuery.size.width * 0.05),
+                    style: TextStyle(fontSize: 35.sp),
                   )),
-                  SizedBox(height: mediaQuery.size.height * 0.03),
-                  TextAboveInputText(mediaQuery, "Nom d'utilisateur"),
+                  SizedBox(height: 50.h),
+                  TextAboveInputText("Nom d'utilisateur"),
                   TextInput(
                       "username",
                       username,
                       context,
-                      mediaQuery,
                       Icon(Icons.account_box_rounded,
                           color: theme.primaryColor),
                       false,
                       theme,0),
-                  TextAboveInputText(mediaQuery, "Mote de passe"),
+                  TextAboveInputText("Mote de passe"),
                   TextInput(
                       "password",
                       password,
                       context,
-                      mediaQuery,
                       Icon(
                         Icons.lock,
                         color: theme.primaryColor,
@@ -77,23 +75,22 @@ class LoginPage extends StatelessWidget {
                   }, icon: context.watch<KarrtyProvider>().rememberMeBool == false ?Icon(Icons.check_box_outline_blank):Icon(Icons.check_box,color: Colors.blue,)),Text("se souvenir de moi")]),
                   Padding(
                     padding: EdgeInsets.symmetric(
-                        vertical: mediaQuery.size.height * 0.04),
+                        vertical: 65.h),
                     child: SizedBox(
                       width: double.infinity,
-                      height: mediaQuery.size.height * 0.06,
+                      height: isLandScape == false ? 82.h:200.h,
                       child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(mediaQuery.size.width *0.2)),
-                              primary: theme.primaryColor),
+                          style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50.h)),
+                              primary: context.watch<KarrtyProvider>().loginLoading == false ?theme.primaryColor: Colors.grey),
                           onPressed: () {
                             if (username.text.isEmpty == false && password.text.isEmpty == false) {
                               context.read<KarrtyProvider>().karrtyLogin(username.text, password.text);
                             }
                           },
-                          child: Text(
-                            "SE CONNECTER",
+                          child: context.watch<KarrtyProvider>().loginLoading == false ? Text("SE CONNECTER",
                             style: TextStyle(
-                                fontSize: mediaQuery.size.height * 0.02),
-                          )),
+                                fontSize: 32.sp),
+                          ):CircularProgressIndicator(color: Colors.white54,)),
                     ),
                   )
                 ],
